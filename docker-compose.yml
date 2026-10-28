@@ -1,0 +1,27 @@
+services:
+  api:
+    build:
+      context: .
+      target: backend-runtime
+    environment:
+      SERVER_PORT: "8080"
+      APP_LLM_ACTIVE_PROVIDER: ${APP_LLM_ACTIVE_PROVIDER:-yandex}
+      YANDEX_API_KEY: ${YANDEX_API_KEY:-}
+      YANDEX_IAM_TOKEN: ${YANDEX_IAM_TOKEN:-}
+      YANDEX_FOLDER_ID: ${YANDEX_FOLDER_ID:-}
+      YANDEX_MODEL: ${YANDEX_MODEL:-yandexgpt-5-lite}
+      YANDEX_PROMPT_ID: ${YANDEX_PROMPT_ID:-}
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    init: true
+
+  web:
+    build:
+      context: .
+      target: frontend-runtime
+    ports:
+      - "8081:80"
+    depends_on:
+      - api
+    restart: unless-stopped
